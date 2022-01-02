@@ -10,6 +10,10 @@ class Staff:
     def __init__(self, uri, user, password):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
 
+    def restart(self):# Restart the graph.
+        tx = self.__session()
+        tx.run("MATCH (n) DETACH DELETE n")
+
     def close(self):
         self.driver.close()
 
@@ -61,7 +65,8 @@ class Staff:
 
 
 if __name__ == "__main__":
-    staff = Staff("bolt://localhost:7687", "neo4j", "511")
+    staff = Staff("bolt://localhost:7687", "neo4j", "111")
+    staff.restart()
     staff.create()
     staff.match()
 
@@ -84,7 +89,7 @@ if __name__ == "__main__":
         print(q)
         for d in data:
             for k in d.keys():
-                print(str(k) + " : " + str(d[k]), end="    ")
+                print("{:25}".format(str(k) + " : " + str(d[k])), end="") # Print the result.
             print("\n")
     staff.close()
 
